@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Class 11–12 Science Portal</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #111823;
+      --text: #e8eef7;
+      --muted: #9fb0c2;
+      --accent: #4cc9f0;
+      --accent-2: #a1ffce;
+      --border: #1f2a37;
+      --shadow: 0 10px 25px rgba(0,0,0,0.35);
+    }
+    [data-theme="light"]{
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #445266;
+      --accent: #2563eb;
+      --accent-2: #059669;
+      --border: #e5e7eb;
+      --shadow: 0 8px 20px rgba(2,6,23,0.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    /* Preloader Styles */
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+    }
+    
+    #preloader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    .preloader-content {
+      text-align: center;
+    }
+    
+    .preloader-logo img {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+
+      margin: 0 auto 20px;
+      position: relative;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(76, 201, 240, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(76, 201, 240, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(76, 201, 240, 0); }
+    }
+    
+    .preloader-text {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .preloader-spinner {
+      width: 50px;
+      height: 50px;
+      margin: 0 auto;
+      border: 5px solid rgba(76, 201, 240, 0.2);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    header{
+      position:sticky;
+      top:0;
+      z-index:50;
+      background:linear-gradient(180deg,var(--bg),rgba(0,0,0,0));
+      backdrop-filter:saturate(1.2) blur(6px);
+      border-bottom:1px solid var(--border);
+    }
+    .container{max-width:1200px;margin:0 auto;padding:16px}
+    .row{display:flex;gap:12px;align-items:center;justify-content:space-between}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo img{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:var(--shadow)}
+    h1{font-size:20px;margin:0}
+    .subtitle{color:var(--muted);font-size:12px}
+    .toggle{
+      display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);padding:8px 12px;border-radius:999px;background:var(--card);cursor:pointer;box-shadow:var(--shadow);user-select:none
+    }
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+    .tab{border:1px solid var(--border);background:var(--card);padding:10px 14px;border-radius:10px;cursor:pointer}
+    .tab.active{outline:2px solid var(--accent)}
+
+    .subject-wrap{display:none}
+    .subject-wrap.active{display:block}
+
+    .subtabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 8px}
+    .subtab{border:1px dashed var(--border);background:var(--card);padding:8px 12px;border-radius:10px;cursor:pointer;font-size:14px}
+    .subtab.active{outline:2px dashed var(--accent)}
+
+    .grid{display:grid;grid-template-columns:repeat(1,1fr);gap:12px}
+    @media (min-width:480px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (min-width:720px){.grid{grid-template-columns:repeat(3,1fr)}}
+    @media (min-width:1024px){.grid{grid-template-columns:repeat(4,1fr)}}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;min-height:92px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow)}
+    .card h3{font-size:14px;margin:0}
+    .card p{margin:0;color:var(--muted);font-size:12px}
+    .card button{margin-top:auto;border:1px solid var(--border);background:transparent;color:var(--text);padding:8px;border-radius:10px;cursor:pointer}
+    .card:hover{outline:2px solid var(--accent);}
+
+    .section-title{margin:22px 0 8px;font-size:16px}
+
+    /* Chemistry tools */
+    .tool{display:grid;gap:10px;border:1px solid var(--border);background:var(--card);padding:14px;border-radius:16px;box-shadow:var(--shadow)}
+    .tool input,.tool select{width:100%;padding:10px;border:1px solid var(--border);border-radius:12px;background:transparent;color:var(--text)}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(76,201,240,0.15);border:1px solid var(--border);font-size:12px;margin-right:6px;margin-top:6px}
+
+    /* PDF Modal - Updated for mobile responsiveness */
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.7);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:10px;
+      z-index:100;
+    }
+    .modal.open{
+      display:flex;
+    }
+    .modal-card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      max-width:1100px;
+      width:100%;
+      height:90vh;
+      display:flex;
+      flex-direction:column;
+      box-shadow:var(--shadow);
+      position: relative;
+    }
+    @media (max-width: 768px) {
+      .modal-card {
+        height: 95vh;
+        width: 95vw;
+        border-radius: 12px;
+      }
+    }
+    .modal-bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+      border-bottom:1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .modal-title{
+      font-size:14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 70%;
+    }
+    .modal-actions{
+      display:flex;
+      gap:8px;
+    }
+    .modal-actions button{
+      border:1px solid var(--border);
+      background:transparent;
+      color:var(--text);
+      padding:8px 10px;
+      border-radius:10px;
+      cursor:pointer;
+      white-space: nowrap;
+    }
+    #pdfFrame{
+      flex:1;
+      border:0;
+      border-top:1px solid var(--border);
+      background:#fff;
+      border-bottom-left-radius:16px;
+      border-bottom-right-radius:16px;
+      width: 100%;
+      height: 100%;
+    }
+    @media (max-width: 480px) {
+      .modal-actions {
+        flex-direction: column;
+        gap: 4px;
+      }
+      .modal-actions button {
+        padding: 6px 8px;
+        font-size: 12px;
+      }
+    }
+    .helper{color:var(--muted);font-size:12px}
+
+    /* New styles for mobile search */
+    .search-container {
+      display: flex;
+      gap: 8px;
+    }
+    .search-container input {
+      flex: 1;
+    }
+    .search-btn {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .search-btn:hover {
+      background: rgba(76, 201, 240, 0.1);
+    }
+    
+    /* Footer styles */
+    footer {
+      margin-top: auto;
+      padding: 20px 0;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      background: var(--card);
+    }
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+    .copyright {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0;
+            font-weight: bold;
+
+    }
+    .developers {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: bold;
+    }
+    .heart {
+      color: #ff5252;
+      display: inline-block;
+      margin: 0 4px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Preloader -->
+  <div id="preloader">
+    <div class="preloader-content">
+      <div class="preloader-logo">
+        <img src="logo.png.jpg" alt="">
+      </div>
+      <div class="preloader-text">Oxbridge Academy</div>
+      <div class="preloader-spinner"></div>
+    </div>
+  </div>
+
+  <header>
+    <div class="container">
+      <div class="row">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">
+            <img src="logo.png.jpg" alt="">
+          </div>
+          <div>
+        <h1>Oxbridge Academy — Class 11 & 12 Science</h1> 
+            <div class="subtitle">Chemistry · Physics · Biology  <code> </code>  </div>
+          </div>
+        </div>
+        <div>
+          <button id="themeBtn" class="toggle" title="Toggle theme">🌗 <span id="themeLabel">Dark</span></button>
+        </div>
+      </div>
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-subject="chemistry" role="tab">⚗️ Chemistry</button>
+        <button class="tab" data-subject="physics" role="tab">⚛ Physics</button>
+        <button class="tab" data-subject="biology" role="tab">🧬 Biology</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Chemistry -->
+    <section id="chemistry" class="subject-wrap active" role="tabpanel">
+      <h2 class="section-title">Chemistry Tools</h2>
+      <div class="tool">
+        <strong>Element & Group Finder</strong>
+        <label>Search by symbol or name</label>
+        <div class="search-container">
+          <input id="elSearch" placeholder="e.g., Fe or Iron" />
+          <button id="elSearchBtn" class="search-btn">Search</button>
+        </div>
+        <div id="elResult" class="helper">Type a symbol/name and press Enter or tap Search.</div>
+        <div style="height:1px;background:var(--border);"></div>
+        <label>Browse by group</label>
+        <select id="groupSelect"></select>
+        <div id="groupResult" class="helper">Pick a group to see key members.</div>
+      </div>
+
+      <h2 class="section-title">Chemistry — Class 11</h2>
+      <div id="chem11" class="grid"></div>
+
+      <h2 class="section-title">Chemistry — Class 12</h2>
+      <div id="chem12" class="grid"></div>
+    </section>
+
+    <!-- Physics -->
+    <section id="physics" class="subject-wrap" role="tabpanel">
+      <div class="subtabs" role="tablist">
+        <button class="subtab active" data-class="phy11">Class 11</button>
+        <button class="subtab" data-class="phy12">Class 12</button>
+      </div>
+      <div id="phy11" class="grid"></div>
+      <div id="phy12" class="grid" style="display:none"></div>
+    </section>
+
+    <!-- Biology -->
+    <section id="biology" class="subject-wrap" role="tabpanel">
+      <div class="subtabs" role="tablist">
+        <button class="subtab active" data-class="bio11">Class 11</button>
+        <button class="subtab" data-class="bio12">Class 12</button>
+      </div>
+      <div id="bio11" class="grid"></div>
+      <div id="bio12" class="grid" style="display:none"></div>
+    </section>
+  </main>
+
+  <!-- Footer Section -->
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">® All Rights Reserved by Oxbridge Academy 2025 </p>
+      <p class="developers">Developed with <span class="heart">❤</span> <br>by Shahzaib Wajid and Farman</p>
+    </div>
+  </footer
+
+  <!-- PDF Modal -->
+  <div id="pdfModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="pdfTitle">
+    <div class="modal-card">
+      <div class="modal-bar">
+        <div class="modal-title" id="pdfTitle">Opening…</div>
+        <div class="modal-actions">
+          <button id="openNew">Open in new tab ↗</button>
+          <button id="closeModal">Close ✕</button>
+        </div>
+      </div>
+      <iframe id="pdfFrame" title="PDF viewer"></iframe>
+    </div>
+  </div>
+
+  <script>
+    // ===== Preloader Logic =====
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        const preloader = document.getElementById('preloader');
+        preloader.classList.add('hidden');
+        
+        // Remove preloader from DOM after transition completes
+        setTimeout(function() {
+          preloader.style.display = 'none';
+        }, 500);
+      }, 1500); // Show preloader for at least 1.5 seconds
+    });
+
+    // ===== Theme Toggle =====
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('themeBtn');
+    const themeLabel = document.getElementById('themeLabel');
+    function setTheme(mode){
+      document.documentElement.setAttribute('data-theme', mode);
+      localStorage.setItem('theme', mode);
+      themeLabel.textContent = mode === 'light' ? 'Light' : 'Dark';
+    }
+    setTheme(localStorage.getItem('theme') || 'dark');
+    themeBtn.addEventListener('click', ()=>{
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+    });
+
+    // ====== Subject Tabs ======
+    document.querySelectorAll('.tab').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+        document.querySelectorAll('.subject-wrap').forEach(s=>s.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.subject).classList.add('active');
+      })
+    })
+
+    // ====== Subtabs (Physics/Biology classes) ======
+    document.querySelectorAll('#physics .subtab').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('#physics .subtab').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('phy11').style.display = btn.dataset.class==='phy11' ? 'grid' : 'none';
+        document.getElementById('phy12').style.display = btn.dataset.class==='phy12' ? 'grid' : 'none';
+      });
+    });
+    document.querySelectorAll('#biology .subtab').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('#biology .subtab').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('bio11').style.display = btn.dataset.class==='bio11' ? 'grid' : 'none';
+        document.getElementById('bio12').style.display = btn.dataset.class==='bio12' ? 'grid' : 'none';
+      });
+    });
+
+    // ===== PDF Modal Logic =====
+    const modal = document.getElementById('pdfModal');
+    const frame = document.getElementById('pdfFrame');
+    const pdfTitle = document.getElementById('pdfTitle');
+    const openNew = document.getElementById('openNew');
+    document.getElementById('closeModal').addEventListener('click',()=>{
+      modal.classList.remove('open');
+      frame.src = 'about:blank';
+    });
+    
+    // Close modal when clicking outside content
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('open');
+        frame.src = 'about:blank';
+      }
+    });
+    
+    function openPDF(title, path){
+      pdfTitle.textContent = title;
+      frame.src = path;
+      openNew.onclick = ()=> window.open(path,'_blank');
+      modal.classList.add('open');
+    }
+
+    // ===== Cards Renderer =====
+    function humanize(file){
+      return file.replace(/[-_]/g,' ').replace(/\.pdf$/,'').replace(/\b\w/g, c=>c.toUpperCase());
+    }
+    function renderGrid(gridId, files){
+      const el = document.getElementById(gridId);
+      el.innerHTML = '';
+      files.forEach(f=>{
+        const title = humanize(f);
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<h3>${title}</h3><p>Tap to open PDF</p><button>Open</button>`;
+        card.addEventListener('click',()=>openPDF(title, `pdf/${f}`));
+        el.appendChild(card);
+      });
+    }
+
+    // ===== File Lists (Put all PDFs in /pdf folder) =====
+    const chem11 = [
+      'some-basic-concepts-of-chemistry.pdf','structure-of-atom.pdf','classification-of-elements.pdf','chemical-bonding.pdf','states-of-matter.pdf','thermodynamics.pdf','equilibrium.pdf','redox-reactions.pdf','hydrogen.pdf','s-block-element.pdf','p-block-element-group-13-14.pdf','organic-chemistry-basics.pdf','hydrocarbons.pdf','environmental-chemistry.pdf'
+    ];
+    const chem12 = [
+      'solid-state.pdf','solutions.pdf','electrochemistry.pdf','chemical-kinetics.pdf','surface-chemistry.pdf','isolation-of-elements.pdf','p-block-element-group-15-18.pdf','d-block-element.pdf','f-block-element.pdf','haloalkanes-haloarenes.pdf','alcohols-phenols-ethers.pdf','aldehydes-ketones-carboxylic-acids.pdf','amines.pdf','biomolecules.pdf','polymers.pdf','chemistry-in-everyday-life.pdf'
+    ];
+
+    const phy11 = [
+      'physical-world-measurement.pdf','kinematics.pdf','laws-of-motion.pdf','work-energy-power.pdf','motion-of-system-of-particles.pdf','gravitation.pdf','properties-of-bulk-matter.pdf','thermodynamics-physics.pdf','kinetic-theory.pdf','oscillations-waves.pdf'
+    ];
+    const phy12 = [
+      'electrostatics.pdf','current-electricity.pdf','magnetic-effects-of-current.pdf','electromagnetic-induction.pdf','electromagnetic-waves.pdf','optics.pdf','dual-nature-of-matter.pdf','atoms-nuclei.pdf','electronic-devices.pdf','communication-systems.pdf'
+    ];
+
+    const bio11 = [
+      'diversity-of-living-world.pdf','structural-organisation.pdf','cell-structure-function.pdf','plant-physiology.pdf','human-physiology.pdf'
+    ];
+    const bio12 = [
+      'reproduction.pdf','genetics-evolution.pdf','biology-and-human-welfare.pdf','biotechnology-applications.pdf','ecology-environment.pdf'
+    ];
+
+    renderGrid('chem11', chem11);
+    renderGrid('chem12', chem12);
+    renderGrid('phy11', phy11);
+    renderGrid('phy12', phy12);
+    renderGrid('bio11', bio11);
+    renderGrid('bio12', bio12);
+
+    // ===== Chemistry: Element & Group Finder =====
+    // Minimal dataset (starter pack). You can add more elements easily.
+    // Format: Z, symbol, name, group(1-18 or null), period(1-7)
+    const ELEMENTS = [
+      [1,'H','Hydrogen',1,1],[2,'He','Helium',18,1],
+      [3,'Li','Lithium',1,2],[4,'Be','Beryllium',2,2],[5,'B','Boron',13,2],[6,'C','Carbon',14,2],[7,'N','Nitrogen',15,2],[8,'O','Oxygen',16,2],[9,'F','Fluorine',17,2],[10,'Ne','Neon',18,2],
+      [11,'Na','Sodium',1,3],[12,'Mg','Magnesium',2,3],[13,'Al','Aluminium',13,3],[14,'Si','Silicon',14,3],[15,'P','Phosphorus',15,3],[16,'S','Sulfur',16,3],[17,'Cl','Chlorine',17,3],[18,'Ar','Argon',18,3],
+      [19,'K','Potassium',1,4],[20,'Ca','Calcium',2,4],[21,'Sc','Scandium',3,4],[22,'Ti','Titanium',4,4],[23,'V','Vanadium',5,4],[24,'Cr','Chromium',6,4],[25,'Mn','Manganese',7,4],[26,'Fe','Iron',8,4],[27,'Co','Cobalt',9,4],[28,'Ni','Nickel',10,4],[29,'Cu','Copper',11,4],[30,'Zn','Zinc',12,4],[31,'Ga','Gallium',13,4],[32,'Ge','Germanium',14,4],[33,'As','Arsenic',15,4],[34,'Se','Selenium',16,4],[35,'Br','Bromine',17,4],[36,'Kr','Krypton',18,4],
+      [37,'Rb','Rubidium',1,5],[38,'Sr','Strontium',2,5],[39,'Y','Yttrium',3,5],[40,'Zr','Zirconium',4,5],[41,'Nb','Niobium',5,5],[42,'Mo','Molybdenum',6,5],[43,'Tc','Technetium',7,5],[44,'Ru','Ruthenium',8,5],[45,'Rh','Rhodium',9,5],[46,'Pd','Palladium',10,5],[47,'Ag','Silver',11,5],[48,'Cd','Cadmium',12,5],[49,'In','Indium',13,5],[50,'Sn','Tin',14,5],[51,'Sb','Antimony',15,5],[52,'Te','Tellurium',16,5],[53,'I','Iodine',17,5],[54,'Xe','Xenon',18,5],
+      [55,'Cs','Cesium',1,6],[56,'Ba','Barium',2,6],[72,'Hf','Hafnium',4,6],[73,'Ta','Tantalum',5,6],[74,'W','Tungsten',6,6],[75,'Re','Rhenium',7,6],[76,'Os','Osmium',8,6],[77,'Ir','Iridium',9,6],[78,'Pt','Platinum',10,6],[79,'Au','Gold',11,6],[80,'Hg','Mercury',12,6],[81,'Tl','Thallium',13,6],[82,'Pb','Lead',14,6],[83,'Bi','Bismuth',15,6],[84,'Po','Polonium',16,6],[85,'At','Astatine',17,6],[86,'Rn','Radon',18,6],
+      [87,'Fr','Francium',1,7],[88,'Ra','Radium',2,7],[104,'Rf','Rutherfordium',4,7],[105,'Db','Dubnium',5,7],[106,'Sg','Seaborgium',6,7],[107,'Bh','Bohrium',7,7],[108,'Hs','Hassium',8,7],[109,'Mt','Meitnerium',9,7],[110,'Ds','Darmstadtium',10,7],[111,'Rg','Roentgenium',11,7],[112,'Cn','Copernicium',12,7],[113,'Nh','Nihonium',13,7],[114,'Fl','Flerovium',14,7],[115,'Mc','Moscovium',15,7],[116,'Lv','Livermorium',16,7],[117,'Ts','Tennessine',17,7],[118,'Og','Oganesson',18,7]
+      // Lanthanoids/Actinoids are omitted from group browsing but can be searched by symbol if added later.
+    ];
+
+    const GROUP_META = {
+      1: 'Group 1 — Alkali Metals (H behaves uniquely)',
+      2: 'Group 2 — Alkaline Earth Metals',
+      3: 'Group 3 — Scandium Group',
+      4: 'Group 4 — Titanium Group',
+      5: 'Group 5 — Vanadium Group',
+      6: 'Group 6 — Chromium Group',
+      7: 'Group 7 — Manganese Group',
+      8: 'Group 8 — Iron Group',
+      9: 'Group 9 — Cobalt Group',
+      10: 'Group 10 — Nickel Group',
+      11: 'Group 11 — Coinage Metals',
+      12: 'Group 12 — Zinc Group',
+      13: 'Group 13 — Boron/Triels',
+      14: 'Group 14 — Carbon/Tetrels',
+      15: 'Group 15 — Nitrogen/Pnictogens',
+      16: 'Group 16 — Oxygen/Chalcogens',
+      17: 'Group 17 — Halogens',
+      18: 'Group 18 — Noble Gases'
+    };
+
+    // Populate group select
+    const groupSelect = document.getElementById('groupSelect');
+    groupSelect.innerHTML = '<option value="">— Select group (1–18) —</option>' +
+      Array.from({length:18}, (_,i)=>`<option value="${i+1}">Group ${i+1}</option>`).join('');
+
+    groupSelect.addEventListener('change', ()=>{
+      const g = parseInt(groupSelect.value,10);
+      if(!g){ document.getElementById('groupResult').textContent = 'Pick a group to see key members.'; return; }
+      const members = ELEMENTS.filter(e=>e[3]===g).map(e=>`${e[1]} (${e[2]})`).slice(0,12);
+      document.getElementById('groupResult').innerHTML = `<div class="helper">${GROUP_META[g] || ''}</div>` +
+        (members.length? '<div>'+members.map(x=>`<span class="pill">${x}</span>`).join('')+'</div>' : '<div class="helper">No members listed yet.</div>');
+    });
+
+    // Search by symbol/name
+    const elSearch = document.getElementById('elSearch');
+    const elSearchBtn = document.getElementById('elSearchBtn');
+    
+    function lookupElement(){
+      const q = (elSearch.value||'').trim();
+      if(!q){document.getElementById('elResult').textContent='Type a symbol/name and press Enter or tap Search.';return}
+      const hit = ELEMENTS.find(e=> e[1].toLowerCase()===q.toLowerCase() || e[2].toLowerCase()===q.toLowerCase());
+      if(!hit){ document.getElementById('elResult').textContent = 'Not found in the starter list. You can expand the dataset in code if needed.'; return; }
+      const [Z,sym,name,group,period] = hit;
+      document.getElementById('elResult').innerHTML = `<div class="pill">${name} (${sym})</div>
+        <div class="helper">Atomic No: ${Z} · Group: ${group} · Period: ${period}</div>`;
+    }
+    
+    elSearch.addEventListener('keydown', (e)=>{ if(e.key==='Enter') lookupElement() });
+    elSearchBtn.addEventListener('click', lookupElement);
+
+  </script>
+  
+  <!--Start of Tawk.to Script-->
+  <script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='https://embed.tawk.to/68b3de22cbdd78615202c567/1j3v9neh5';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
+  <!--End of Tawk.to Script-->
+</body>
+</html>
